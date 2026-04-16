@@ -1,0 +1,33 @@
+{
+  "name": "api-expert",
+  "version": "1.0.0",
+  "description": "Expert API design, review, debugging, optimization, security auditing, spec generation, migration, and deprecation. Opus 4.7 agent backed by embedded reference files covering architecture patterns, schema design, authentication, authorization, security hardening, client access, performance, observability, testing, inter-service communication, and API lifecycle. Handles REST/GraphQL/gRPC/tRPC/Connect, OAuth 2.1/OIDC, multi-tenancy, RFC 9457 errors, rate limiting, OTel observability, and the full API lifecycle from spec to sunset.",
+  "author": {
+    "name": "TheMizeGuy",
+    "url": "https://github.com/TheMizeGuy"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TheMizeGuy/api-expert-public"
+  },
+  "keywords": [
+    "api",
+    "api-design",
+    "api-review",
+    "openapi",
+    "graphql",
+    "grpc",
+    "rest",
+    "oauth",
+    "oidc",
+    "security-audit",
+    "rate-limiting",
+    "observability",
+    "contract-testing",
+    "multi-service",
+    "microservices",
+    "deprecation",
+    "sdk-generation"
+  ]
+}
