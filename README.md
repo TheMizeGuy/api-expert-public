@@ -11,20 +11,18 @@ See [USAGE.md](USAGE.md) for a quickstart, a worked walkthrough per skill, and a
 ## Installation
 
 ```bash
-# Clone into your Claude Code plugins directory
-cd ~/.claude/plugins
-git clone https://github.com/TheMizeGuy/api-expert-public.git api-expert
+# 1. Add this repo as a marketplace
+claude plugin marketplace add https://github.com/TheMizeGuy/api-expert-public.git
+
+# 2. Install the plugin
+claude plugin install api-expert@api-expert-public
+
+# 3. Restart Claude Code for the plugin to load
 ```
 
-Or add to an existing project:
+After restart, verify with `claude plugin list`. Updates ship through the same channel: when a new release lands, run `claude plugin marketplace update api-expert-public` then `claude plugin update api-expert@api-expert-public`, or accept the update prompt in `/plugin`.
 
-```bash
-cd your-project
-mkdir -p .claude/plugins
-git clone https://github.com/TheMizeGuy/api-expert-public.git .claude/plugins/api-expert
-```
-
-This repository does not ship a marketplace manifest — cloning is the only install path.
+Manual alternative: `git clone https://github.com/TheMizeGuy/api-expert-public.git` and load with `claude --plugin-dir <path>`.
 
 ## Skills
 
