@@ -1,3 +1,7 @@
+.serena/
+.claude/
+.anti-slop/
+.remember/
 .DS_Store
 node_modules/
 *.local.md

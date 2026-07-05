@@ -1,8 +1,12 @@
 # api-expert
 
-Claude Code plugin for expert API design, review, debugging, optimization, security auditing, spec generation, migration, and deprecation.
+Version 2.0.0
 
-Backed by embedded reference files covering architecture patterns, schema design, authentication, authorization, security hardening, client access, performance, observability, testing, inter-service communication, and API lifecycle.
+Claude Code plugin for expert API design, review, debugging, optimization, security auditing, spec generation, migration, and deprecation. Runs on the session model — always the strongest available Claude, never a pinned or dated model.
+
+Backed by embedded reference files covering architecture patterns, schema design, authentication, authorization, security hardening, client access, performance, observability, testing, inter-service communication, and API lifecycle, plus a canonical OWASP API Top 10 2023 checklist. Optionally grounds itself further with goodmem (memory) and serena (semantic code navigation) MCP servers when configured — every workflow works standalone from the embedded references if you don't have those.
+
+See [USAGE.md](USAGE.md) for a quickstart, a worked walkthrough per skill, and a troubleshooting table.
 
 ## Installation
 
@@ -20,6 +24,8 @@ mkdir -p .claude/plugins
 git clone https://github.com/TheMizeGuy/api-expert-public.git .claude/plugins/api-expert
 ```
 
+This repository does not ship a marketplace manifest — cloning is the only install path.
+
 ## Skills
 
 | Skill | Slash command | Purpose |
@@ -29,7 +35,7 @@ git clone https://github.com/TheMizeGuy/api-expert-public.git .claude/plugins/ap
 | `review-api` | `/api-expert:review-api` | Comprehensive API review with severity-tagged findings |
 | `debug-api` | `/api-expert:debug-api` | Systematic API bug diagnosis |
 | `optimize-api` | `/api-expert:optimize-api` | Performance optimization (measure first, then fix) |
-| `audit-api-security` | `/api-expert:audit-api-security` | OWASP API Top 10 2023 security audit |
+| `audit-api-security` | `/api-expert:audit-api-security` | OWASP API Top 10 2023 security audit against the canonical 15-row checklist |
 | `create-api-spec` | `/api-expert:create-api-spec` | Generate OpenAPI/GraphQL/Protobuf specs |
 | `migrate-api` | `/api-expert:migrate-api` | Version upgrades, protocol changes, framework migrations |
 | `deprecate-api` | `/api-expert:deprecate-api` | RFC 9745/8594 deprecation and sunset workflow |
@@ -37,10 +43,12 @@ git clone https://github.com/TheMizeGuy/api-expert-public.git .claude/plugins/ap
 
 ## Agents
 
-| Agent | Model | Purpose |
-|---|---|---|
-| `api-expert` | Opus | Single-repo API expert — design, review, debug, optimize, secure, spec, migrate, deprecate |
-| `api-team-lead` | Opus | Multi-repo orchestrator — partitions work, dispatches parallel api-expert sub-agents, consolidates findings |
+| Agent | Purpose |
+|---|---|
+| `api-expert` | Single-repo API expert — design, review, debug, optimize, secure, spec, migrate, deprecate |
+| `api-team-lead` | Multi-repo orchestrator — partitions work, dispatches parallel api-expert sub-agents, consolidates findings |
+
+Both agents run on the session model — the strongest available Claude at dispatch time. Neither agent frontmatter pins a model; there is nothing to configure.
 
 ## Usage
 
@@ -68,12 +76,27 @@ The plugin classifies the request, dispatches the api-expert agent with the righ
 /api-expert:cross-project-api-audit api,web,mobile,admin,worker
 ```
 
-### Agent dispatch
+### Agent dispatch (advanced)
+
+For single-repo work, dispatch `api-expert` directly:
 
 ```
-Agent({ subagent_type: "api-expert:api-expert", model: "opus", prompt: "..." })
-Agent({ subagent_type: "api-expert:api-team-lead", model: "opus", prompt: "..." })
+Agent({ subagent_type: "api-expert:api-expert", prompt: "..." })
 ```
+
+For multi-repo team mode, do NOT dispatch `api-team-lead` by plugin-namespaced `subagent_type` —
+plugin-namespaced dispatch silently strips the `Agent` tool the team lead needs to fan out
+sub-agents (a Claude Code platform limitation; see the RUNTIME DISPATCH NOTE at the top of
+`agents/api-team-lead.md`). Use the `cross-project-api-audit` skill instead — it reads the agent
+file's body and dispatches it under `subagent_type: "general-purpose"`, which keeps the `Agent`
+tool intact:
+
+```
+/api-expert:cross-project-api-audit api,web,mobile,admin,worker
+```
+
+In every dispatch, omit `model` — the agent inherits the session model, always the strongest
+available Claude at the time it runs.
 
 ## Reference files
 
@@ -93,11 +116,23 @@ The `references/` directory contains distilled knowledge on:
 | `inter-service.md` | Service meshes, circuit breakers, Kafka/RabbitMQ/NATS, sagas |
 | `documentation-lifecycle.md` | Docs platforms, versioning, RFC 9745+8594 deprecation |
 
+`skills/audit-api-security/references/owasp-api-top-10-2023.md` is a separate, more detailed
+checklist: all ten OWASP items with per-item checks, five additional check groups (secrets, JWT
+attacks, dependency supply chain, logging security, input validation), a severity decision test, and
+a worked finding example. `audit-api-security` and `review-api` both read it directly.
+
 ## Dependencies
 
 | Dependency | Required | Purpose |
 |---|---|---|
 | context7 MCP | Optional | Library documentation lookup |
+| goodmem MCP | Optional | Cross-session memory — prior learnings on the same problem, meta-learnings across audits |
+| serena MCP | Optional | Semantic code navigation (symbol lookup instead of grep) |
+
+None of these are required. Every skill and agent skips a step gracefully when its MCP server isn't
+configured, and works from the embedded reference files plus your codebase alone. If you do use
+goodmem, the space IDs referenced in agent/skill bodies are placeholders (`<your-goodmem-...-id>`) —
+fill in your own.
 
 All other tools used are Claude Code built-ins (Read, Grep, Glob, Bash, Edit, Write, WebSearch, WebFetch, TodoWrite).
 
@@ -109,6 +144,25 @@ All other tools used are Claude Code built-ins (Read, Grep, Glob, Bash, Edit, Wr
 - tRPC
 - WebSocket / SSE
 - Webhooks
+
+## Not for
+
+- Quick "what's a REST API?" questions — just use regular Claude for that
+- Implementation-only tasks where the architecture is fixed — use direct coding instead
+- Single-line error message lookups — use regular Claude
+- Python/Ruby/Java-only codebases where no JSON/REST/GraphQL API is involved
+
+## Related plugins
+
+If you also use these public plugin mirrors from the same author, they complement api-expert:
+
+| Plugin | When to use alongside api-expert |
+|---|---|
+| `scrum-master-public` | Convert audit findings into kanban stories |
+| `railway-operator-public` | Actually deploy the designed API on Railway |
+| `typescript-senior-review-public` | Deeper TypeScript-specific review (complementary) |
+| `ios-code-review-public` | Review the iOS client-side of the API contract |
+| `deep-research-public` | Extend the reference files when gaps surface |
 
 ## License
 

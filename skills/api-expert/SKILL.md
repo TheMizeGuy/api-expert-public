@@ -1,9 +1,9 @@
 ---
 name: api-expert
 description: |-
-  Main entry point for the API Expert plugin — dispatches the Opus 4.7 api-expert agent for any API-related task. Use when the user mentions APIs in the context of design, review, debugging, optimization, creation, security, migration, deprecation, or documentation AND the specific workflow isn't obvious. Classifies the request and routes to the right workflow (design / review / debug / optimize / audit / spec / migrate / deprecate). Examples: "design an api for...", "review my api", "api is slow", "optimize this endpoint", "secure my api", "migrate from rest to graphql", "deprecate v1 of the api", "check my openapi spec". If the scope is explicitly a cross-project audit (3+ repos OR "cross-project api audit" OR `--team`), routes to `cross-project-api-audit` skill instead.
+  Main entry point for the API Expert plugin — dispatches the api-expert agent (runs on the session model, always the strongest available Claude) for any API-related task. Use when the user mentions APIs in the context of design, review, debugging, optimization, creation, security, migration, deprecation, or documentation AND the specific workflow isn't obvious. Classifies the request and routes to the right workflow (design / review / debug / optimize / audit / spec / migrate / deprecate). Examples: "design an api for...", "review my api", "api is slow", "optimize this endpoint", "secure my api", "migrate from rest to graphql", "deprecate v1 of the api", "check my openapi spec". If the scope is explicitly a cross-project audit (3+ repos OR "cross-project api audit" OR `--team`), routes to `cross-project-api-audit` skill instead.
 argument-hint: '<request describing what you want done with the API>'
-allowed-tools: Agent, Read, Grep, Glob, Bash, TodoWrite, WebSearch, WebFetch, mcp__plugin_context7_context7__resolve-library-id, mcp__plugin_context7_context7__query-docs
+allowed-tools: Agent, Read, Grep, Glob, Bash, TodoWrite, WebSearch, WebFetch, mcp__goodmem__goodmem_memories_retrieve, mcp__goodmem__goodmem_memories_get, mcp__context7__resolve-library-id, mcp__context7__query-docs
 ---
 
 # API Expert — Main Entry
@@ -25,6 +25,17 @@ You are routing a user request to the api-expert agent. Your job is to classify 
 | "cross-project", "multi-repo", "across all repos", `--team` | STOP — dispatch `cross-project-api-audit` skill instead |
 | Ambiguous | Ask 1-2 targeted questions, then proceed |
 
+### Tie-breaks (request matches 2+ rows — apply in order, first match wins)
+
+1. Any security keyword present ("secure", "vulnerability", "owasp", "pentest", compliance names) →
+   Security workflow, even if "review" or "design" also appears
+2. Broken vs slow: errors, wrong data, or intermittent failures anywhere in the request → Debug
+   (even if the user says "slow"); working-correctly-but-slow with no defect → Optimize
+3. Design vs migrate: an existing API is being changed or replaced → Migration; greenfield → Design
+4. Spec keywords alongside another workflow → the other workflow wins; the spec is one of its
+   deliverables anyway
+5. Debug vs optimize still tied and evidence thin → Debug first — root cause before tuning
+
 ## Step 2: Gather minimum context (do NOT dispatch without this)
 
 Before dispatching the agent:
@@ -42,7 +53,7 @@ Before dispatching the agent:
 Agent({
   description: "API expert: <workflow>",
   subagent_type: "api-expert:api-expert",
-  model: "opus",
+  // model omitted — inherits the session model (always the strongest available Claude)
   prompt: "<briefing with user request, classified workflow, working directory, relevant file paths, any specific constraints the user mentioned>"
 })
 ```
@@ -60,12 +71,16 @@ CANDIDATE FILES (if detected): <paths>
 
 USER-SPECIFIED CONSTRAINTS: <any mentioned>
 
-Proceed with your standard workflow. Read the relevant reference files from ${CLAUDE_PLUGIN_ROOT}/references/ FIRST, then the relevant domain files. Produce a structured report with confidence grades, concrete fixes, and verification steps.
+Proceed with your standard workflow. Read the relevant reference files from ${CLAUDE_PLUGIN_ROOT}/references/ FIRST, then query goodmem Learnings if configured. Produce a structured report with confidence grades, concrete fixes, and verification steps.
 ```
 
 ## Step 4: Relay findings
 
 The agent returns a structured report. Present the Summary + Findings table to the user. For long reports, offer to drill into specific findings on request.
+
+## Execution mode
+
+The dispatched agent inherits the session model — always the strongest available Claude, never a pinned or dated model. If the session model is already the strongest tier and the task is important or complicated, this skill may run the workflow inline in the main context instead of dispatching a separate agent. Never block on, or wait for, a model that isn't the session model.
 
 ## Never do
 
