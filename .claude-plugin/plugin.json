@@ -1,6 +1,6 @@
 {
   "name": "api-expert",
-  "version": "2.0.0",
+  "version": "0.1.2",
   "description": "Expert API design, review, debugging, optimization, security auditing, spec generation, migration, and deprecation. Runs on the session model — always the strongest available Claude. Backed by embedded reference files covering architecture patterns, schema design, authentication, authorization, security hardening, client access, performance, observability, testing, inter-service communication, and API lifecycle, plus a canonical OWASP API Top 10 2023 checklist. Optionally grounds itself further with goodmem (memory) and serena (semantic code navigation) MCP servers if configured — works standalone from the embedded references if not. Handles REST/GraphQL/gRPC/tRPC/Connect, OAuth 2.1/OIDC, multi-tenancy, RFC 9457 errors, rate limiting, OTel observability, and the full API lifecycle from spec to sunset.",
   "author": {
     "name": "TheMizeGuy",

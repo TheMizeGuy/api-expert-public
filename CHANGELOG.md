@@ -3,6 +3,12 @@
 All notable changes to this plugin are documented here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.1.2] - 2026-07-05
+
+### Changed
+
+- **Version realignment**: reset this public mirror's version from 2.0.0 to 0.1.2 so it tracks the private source of truth (`TheMizeGuy/api-expert`). Public mirror versions now move in lockstep with the private plugin; the earlier independent public-milestone numbering (2.0.0) is retired. No functional or content change — this bump only aligns the version number.
+
 ## [2.0.0] - 2026-07-05
 
 ### Changed (breaking)
