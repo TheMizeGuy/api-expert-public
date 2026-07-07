@@ -66,7 +66,7 @@ DELIVERABLES:
 
    RFC 8594 Sunset (value is RFC 1123 date):
    ```
-   Sunset: Tue, 31 Dec 2026 23:59:59 GMT
+   Sunset: Thu, 31 Dec 2026 23:59:59 GMT
    Link: <https://developer.example.com/sunset/v1>; rel="sunset"; type="text/html"
    ```
 

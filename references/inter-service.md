@@ -10,7 +10,7 @@ Handle mTLS, traffic shaping, retries, circuit breakers, and observability at in
 
 | Mesh | Data plane | Overhead | Strength |
 |---|---|---|---|
-| **Istio** | Envoy (sidecar) or ztunnel+waypoint (ambient) | Ambient: 3-15% | Most capable, CNCF graduated 2025 |
+| **Istio** | Envoy (sidecar) or ztunnel+waypoint (ambient) | Ambient: 3-15% | Most capable, CNCF graduated 2023 |
 | **Linkerd** | linkerd2-proxy (Rust) | ~10 MB/sidecar | Lowest overhead, simplest ops |
 | **Consul Connect** | Envoy | ~30 MB/sidecar | HashiCorp ecosystem, k8s + VMs |
 | **Cilium** | eBPF (no sidecar) | Minimal | Kernel-space routing, no sidecar |

@@ -5,7 +5,9 @@ Installation section and are working inside a Claude Code session with the plugi
 
 ## Quickstart
 
-1. **Install** — clone the repo into your plugins directory (README → Installation).
+1. **Install** — `claude plugin marketplace add TheMizeGuy/api-expert-public`, then
+   `claude plugin install api-expert@api-expert-public` (details: README → Installation). Restart
+   Claude Code, or `/reload-plugins` in a live session.
 2. **Invoke** — either describe what you need in plain language, or use a slash command directly:
    ```
    > review my API for security issues
@@ -89,6 +91,67 @@ supply chain, logging security, input validation) — none from memory.
 Output shape: a 15-row audit table (Status / Evidence / Severity / Remediation), every
 CRITICAL/HIGH finding with a runnable fix, and a top-5 priority list by risk × effort.
 
+### Optimize a slow endpoint (`optimize-api`)
+
+```
+> /api-expert:optimize-api GET /users/:id is p95 1.2s, target 200ms
+```
+
+What happens: the skill gathers the baseline, target SLO, and what evidence exists
+(pg_stat_statements / OTel traces / dashboards), then dispatches `api-expert` with a measure-first
+briefing grounded in `performance-caching.md`. The agent ranks bottlenecks by impact × effort and
+proposes changes in priority order — each with expected impact, an effort estimate (S/M/L), a
+verification method, and a rollback plan. A plan without a measurement baseline is rejected at the
+relay step as guesswork.
+
+Output shape: bottleneck ranking + ordered change plan; you approve before anything is applied,
+and each change is measured before the next lands.
+
+### Generate a spec (`create-api-spec`)
+
+```
+> /api-expert:create-api-spec openapi src/routes/
+```
+
+What happens: the skill picks the format (OpenAPI 3.1/3.2, GraphQL SDL, or Protobuf) and approach
+(code-first extract, contract-first, or hybrid), then dispatches `api-expert` — grounded in
+`schema-design.md` — to write the spec: realistic per-operation responses, RFC 9457 error schemas,
+pagination and idempotency contracts, security schemes — and lint it (Spectral/Redocly; buf for
+Protobuf).
+
+Output shape: the written spec file path plus pasted lint output (a "lints clean" claim without
+output gets re-queried), with offers to generate SDK clients or add CI validation.
+
+### Migrate between versions or protocols (`migrate-api`)
+
+```
+> /api-expert:migrate-api REST v1 to REST v2 with evolutionary versioning
+```
+
+What happens: the skill scopes source, target, consumers, and SLA, then dispatches `api-expert`
+for catalog → target design → pattern selection (Stripe evolutionary, dual-read, shadow traffic,
+blue-green, strangler fig, ...) → an incremental step plan. Every step carries its own
+verification and rollback; every claimed consumer is tagged with its evidence source
+(`grep:<path>` or `assumed`).
+
+Output shape: a gated migration plan; you review and approve each step before execution.
+
+### Deprecate and sunset (`deprecate-api`)
+
+```
+> /api-expert:deprecate-api GET /v1/users/{id}/profile
+```
+
+What happens: the skill collects what's deprecating, the replacement, the audience, and the
+target sunset date, then dispatches `api-expert` — grounded in `documentation-lifecycle.md` — to
+produce the full rollout: RFC 9745 `Deprecation` + RFC 8594 `Sunset` headers, OpenAPI/GraphQL
+deprecation markers, a migration guide, a communication plan, usage telemetry, and 410-Gone
+enforcement with a grace window. Sunset must never precede Deprecation — the relay rejects a
+timeline that violates it.
+
+Output shape: timeline + code diffs + migration guide draft; you approve and schedule the
+announcement.
+
 ### Multi-repo audit (`cross-project-api-audit`)
 
 ```
@@ -110,7 +173,7 @@ depending on repo count.
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| `/api-expert:*` commands not found | Plugin not cloned into a location Claude Code scans | Re-check the Installation section; confirm the clone landed under `~/.claude/plugins/` or `<project>/.claude/plugins/` |
+| `/api-expert:*` commands not found | Marketplace not added, plugin not installed, or the session predates the install | Run the two install commands in README → Installation, then restart Claude Code (`/reload-plugins` in a live session) |
 | Cross-project audit silently does nothing / sub-agents never dispatch | Something invoked `api-team-lead` via `subagent_type: "api-expert:api-team-lead"` directly | Always go through the `cross-project-api-audit` skill, which dispatches under `general-purpose` instead — plugin-namespaced dispatch strips the `Agent` tool the team lead needs |
 | Agent output cites goodmem/serena steps it then skips | Those MCP servers aren't configured in your session | Expected — every workflow explicitly frames goodmem/serena queries as "if configured"; install them only if you want cross-session memory or symbol-aware navigation |
 | Findings feel generic, no file:line evidence | Scope was too broad or the codebase wasn't grep-able (e.g., a spec-only review with no code) | Narrow scope to a directory or file; for spec-only reviews, evidence will cite spec line numbers instead |

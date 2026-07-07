@@ -1,6 +1,6 @@
 # api-expert
 
-Version 0.2.0
+Version 0.2.1
 
 Claude Code plugin for expert API design, review, debugging, optimization, security auditing, spec generation, migration, and deprecation. Runs on the session model — always the strongest available Claude, never a pinned or dated model.
 
@@ -30,7 +30,7 @@ Manual alternative: `git clone https://github.com/TheMizeGuy/api-expert-public.g
 |---|---|---|
 | `api-expert` | `/api-expert:api-expert` | Main entry — classifies request and routes to the right workflow |
 | `design-api` | `/api-expert:design-api` | Design a new API from scratch |
-| `review-api` | `/api-expert:review-api` | Comprehensive API review with severity-tagged findings |
+| `review-api` | `/api-expert:review-api` | Full-surface API review with severity-tagged findings |
 | `debug-api` | `/api-expert:debug-api` | Systematic API bug diagnosis |
 | `optimize-api` | `/api-expert:optimize-api` | Performance optimization (measure first, then fix) |
 | `audit-api-security` | `/api-expert:audit-api-security` | OWASP API Top 10 2023 security audit against the canonical 15-row checklist |
@@ -158,8 +158,8 @@ If you also use these public plugin mirrors from the same author, they complemen
 |---|---|
 | `scrum-master-public` | Convert audit findings into kanban stories |
 | `railway-operator-public` | Actually deploy the designed API on Railway |
-| `typescript-senior-review-public` | Deeper TypeScript-specific review (complementary) |
-| `ios-code-review-public` | Review the iOS client-side of the API contract |
+| `typescript-senior-review` | Deeper TypeScript-specific review (complementary) |
+| `ios-code-review` (plugin name `ios-senior-review`) | Review the iOS client-side of the API contract |
 | `deep-research-public` | Extend the reference files when gaps surface |
 
 ## License

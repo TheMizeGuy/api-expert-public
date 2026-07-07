@@ -76,6 +76,7 @@ Typical partition for a full audit (adjust based on map):
 | **Inter-service communication** | Service mesh, gateways, circuit breakers, queues, idempotency, sagas | inter-service |
 | **Testing & contracts** | Unit/integration/contract tests, mutation testing, load testing | testing |
 | **Lifecycle & DX** | Versioning, deprecation, docs, SDK publishing, changelogs | documentation-lifecycle |
+| **Deployment** | Infra/deploy config, deploy-layer secrets, preview envs, zero-downtime rollout, graceful shutdown | infra-deployment |
 
 Aim for 4-10 scopes. Each scope should produce a distinct, non-overlapping report.
 
@@ -130,7 +131,10 @@ Your mandate:
 - goodmem memory IDs, if any
 ---
 
-Return this report VERBATIM to me. Do NOT write to the codebases. Under 3000 words.
+Return this report VERBATIM to me. Do NOT write to the codebases. Do NOT write goodmem learnings
+directly (if configured) — parallel sub-agents writing concurrently create duplicates; return
+candidates as a `## LEARNING CANDIDATES` section instead and I will dedupe and write once in
+Step 6. Under 3000 words.
 
 ACCEPTANCE CRITERIA — your report is incomplete unless ALL hold:
 - Every repo in REPOS IN SCOPE appears under "Repos audited" (audited, or explicitly skipped with reason)

@@ -77,6 +77,7 @@ ACCEPTANCE CRITERIA — the audit is incomplete unless ALL of these hold:
 - Every N/A row states its reason (e.g., "no GraphQL surface")
 - Every CRITICAL/HIGH finding cites file:line or names the exact missing control and where it belongs
 - No severity softened because the environment is pre-prod
+- No secret value reproduced anywhere in the report — cite file:line + a redacted fingerprint only (the checklist's redaction rule)
 
 PROCEED. Read the CHECKLIST FILE and the supporting reference files, query goodmem for prior art on similar audits if configured, then walk the checklist.
 ```

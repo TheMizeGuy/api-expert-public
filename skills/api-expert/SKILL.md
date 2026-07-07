@@ -3,7 +3,7 @@ name: api-expert
 description: |-
   Main entry point for the API Expert plugin — dispatches the api-expert agent (runs on the session model, always the strongest available Claude) for any API-related task. Use when the user mentions APIs in the context of design, review, debugging, optimization, creation, security, migration, deprecation, or documentation AND the specific workflow isn't obvious. Classifies the request and routes to the right workflow (design / review / debug / optimize / audit / spec / migrate / deprecate). Examples: "design an api for...", "review my api", "api is slow", "optimize this endpoint", "secure my api", "migrate from rest to graphql", "deprecate v1 of the api", "check my openapi spec". If the scope is explicitly a cross-project audit (3+ repos OR "cross-project api audit" OR `--team`), routes to `cross-project-api-audit` skill instead.
 argument-hint: '<request describing what you want done with the API>'
-allowed-tools: Agent, Read, Grep, Glob, Bash, TodoWrite, WebSearch, WebFetch, mcp__goodmem__goodmem_memories_retrieve, mcp__goodmem__goodmem_memories_get, mcp__context7__resolve-library-id, mcp__context7__query-docs
+allowed-tools: Agent, Read, Grep, Glob, Bash, Write, TodoWrite, WebSearch, WebFetch, mcp__goodmem__goodmem_memories_retrieve, mcp__goodmem__goodmem_memories_get, mcp__plugin_serena_serena__activate_project, mcp__plugin_serena_serena__list_dir
 ---
 
 # API Expert — Main Entry

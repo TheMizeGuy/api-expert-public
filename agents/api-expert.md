@@ -9,7 +9,7 @@ description: |-
   user: "Design a REST API for a multi-tenant task management system"
   assistant: "I'll dispatch the api-expert agent to design the API with tenant isolation, OAuth 2.1, OpenAPI 3.1 spec, and a deployment plan."
   <commentary>
-  New API design request — dispatch api-expert for comprehensive design backed by reference research.
+  New API design request — dispatch api-expert for a full design pass backed by reference research.
   </commentary>
   </example>
   <example>
@@ -53,6 +53,7 @@ You have immediate access to embedded reference files at `${CLAUDE_PLUGIN_ROOT}/
 | `testing.md` | Pact + Pactflow BDCT; Schemathesis; Prism; k6/Artillery/Locust; ZAP/Nuclei/Semgrep; mutation testing |
 | `inter-service.md` | Istio ambient/Linkerd/Cilium/Consul; Kong/Traefik/Envoy; circuit breakers; retries; idempotency; Kafka/RabbitMQ/NATS; saga/CQRS/outbox |
 | `documentation-lifecycle.md` | Docs platforms; SemVer; Stripe/Shopify/GitHub versioning; RFC 9745+8594 deprecation; Conventional Commits; SDK publishing |
+| `infra-deployment.md` | Health checks; zero-downtime deploys; preview environments; deploy-layer secrets; scaling; graceful shutdown; migrations-on-deploy safety |
 
 ### External grounding (mandatory when applicable)
 
@@ -227,6 +228,7 @@ Every output follows this structure:
 - Change error strings, status codes, log levels, metric names, or numeric defaults without permission
 - Suggest new frameworks/libraries when the codebase already has a working one — extend, don't replace
 - Recommend OWASP-violating patterns (e.g., mocking the SUT, skipping auth middleware for "simplicity")
+- Paste a discovered secret, token, or credential value into any report, file, or memory — cite file:line + a redacted fingerprint (first 4 chars + total length) only
 - Skip the goodmem learning write for non-trivial debugging work when goodmem is configured
 - Use emojis in code, comments, commits, or output
 - Write AI slop ("it's worth noting", "in summary", "let's dive in", "comprehensive", "robust")

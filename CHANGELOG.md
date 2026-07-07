@@ -3,6 +3,48 @@
 All notable changes to this plugin are documented here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.2.1] - 2026-07-07
+
+Patch from a 30-agent adversarial review (6 lenses, every finding independently verified).
+
+### Fixed
+
+- README's Related-plugins table named two marketplaces that don't exist (`typescript-senior-review-public`,
+  `ios-code-review-public`) — corrected to the real names (`typescript-senior-review`;
+  `ios-code-review`, whose plugin is `ios-senior-review`).
+- USAGE.md Quickstart and Troubleshooting still described the obsolete clone-into-plugins-directory
+  install; both now use the marketplace add/install flow the README documents.
+- `review-api` acceptance criteria were unsatisfiable on a clean codebase (they demanded at least
+  one reference-cited FINDING). A clean review is now valid — it cites the reference files
+  consulted in its coverage notes instead. Relay check and Never-do list match.
+- `review-api` dispatched a full review against an empty diff when the working tree was clean —
+  now stops and asks for a scope.
+- Fix mode captured no pre-apply test baseline, so failures could not be attributed; baseline run
+  + dirty-tree recording now mandated first.
+- Team-lead fan-out let N parallel sub-agents race goodmem writes; sub-agents now return
+  `## LEARNING CANDIDATES` and the lead writes once.
+- `migrate-api` consumer catalogs now tag each consumer `grep:<path>` or `assumed` so the relay's
+  groundedness check is mechanically verifiable.
+- `debug-api` and `optimize-api` both claimed "api is slow" as a trigger; dropped from optimize-api.
+- Sunset header example dated `Tue, 31 Dec 2026` — that date is a Thursday.
+- Istio's CNCF graduation year corrected (2023, not 2025) in `references/inter-service.md`.
+- Remaining "comprehensive" instances (the agent's own banned word) in the agent example block and
+  README skills table reworded.
+- Router skill's allowed-tools list realigned to the standard mirror transform (restores Write +
+  serena navigation tools).
+
+### Added
+
+- `references/infra-deployment.md` + a restored **Deployment** scope in the team-lead partition
+  table — the mirror had silently dropped the deployment audit scope the private version has
+  (health checks, zero-downtime, graceful shutdown, deploy-layer secrets, migrations-on-deploy).
+- Secret-redaction rule for security audits in three layers (canonical checklist, agent MUST-NOT
+  list, audit briefing acceptance criteria): findings cite file:line + a redacted fingerprint;
+  the full secret value is never reproduced.
+- USAGE.md walkthroughs for optimize-api, create-api-spec, migrate-api, and deprecate-api.
+- Keywords array (including `owasp`) on the marketplace manifest for discoverability parity with
+  plugin.json.
+
 ## [0.2.0] - 2026-07-07
 
 ### Fixed

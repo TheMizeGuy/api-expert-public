@@ -85,6 +85,9 @@ remediation code block.
 - Verify .env in .gitignore
 - Check secret rotation mechanism
 - Sealed/encrypted variables on the deployment platform in use
+- REDACTION RULE for every secret found anywhere in this audit: cite file:line plus a redacted
+  fingerprint only (first 4 chars + total length, e.g. `sk-l…(51 chars)`); NEVER reproduce the
+  full value in the report, any written file, or a memory write
 
 ### JWT-specific attacks
 - alg:none attack (library explicitly whitelists algorithms?)

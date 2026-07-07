@@ -54,7 +54,9 @@ DELIVERABLES:
    - List every affected endpoint with its contract shape
    - Identify shared types / models
    - Identify shared middleware (auth, rate limit, logging)
-   - Identify consumers (grep external repos, check SDK download counts)
+   - Identify consumers (grep external repos, check SDK download counts); tag each consumer with
+     its evidence source — `grep:<path>` (show the command) or `assumed` — and list any repo you
+     could not access
 
 2. Design target state
    - Explicit mapping: current endpoint → target endpoint (or deprecation)

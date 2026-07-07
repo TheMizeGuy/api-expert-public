@@ -23,6 +23,8 @@ Dispatches the api-expert agent with a review-workflow briefing.
 | URL to OpenAPI spec | Fetch + review the spec |
 
 Resolve to absolute paths. Run `git status` to confirm working tree state if scope is diff-based.
+If the scope is diff-based and the tree is clean (nothing uncommitted or staged), STOP and ask the
+user to name a scope (`all` / `<file>` / `pr`) instead of dispatching a review against an empty diff.
 
 ## Step 2: Dispatch api-expert
 
@@ -114,7 +116,7 @@ SEVERITY DEFINITIONS:
 
 ACCEPTANCE CRITERIA — the review is incomplete unless ALL of these hold:
 - All 15 category-coverage rows explicitly marked [✓] or [✗] (an unmarked row = unchecked, redo it)
-- At least one finding cites a reference file
+- Grounded either way: if findings exist, at least one cites a reference file; a clean review (zero findings) is valid and instead cites the reference files consulted in its category-coverage notes
 - Every CRITICAL/HIGH finding carries a runnable code fix, not a description
 - Any fix touching a shared utility lists its call sites
 
@@ -124,15 +126,16 @@ Proceed with your standard workflow (reference files first, then goodmem if conf
 ## Step 3: Verify, then relay
 
 Before presenting, check the returned review against the acceptance criteria: 15 coverage rows all
-marked, at least one reference-file-cited finding, runnable fixes on every CRITICAL/HIGH, call sites
-listed for shared-utility fixes. If any check fails, re-query the agent for the gap — do not present
-a partial review as complete.
+marked, reference grounding present (a reference-file-cited finding when findings exist;
+consulted-file citations in the coverage notes when the review is clean), runnable fixes on every
+CRITICAL/HIGH, call sites listed for shared-utility fixes. If any check fails, re-query the agent
+for the gap — do not present a partial review as complete.
 
 Present the Summary + severity-tagged table. Offer to apply fixes one-by-one starting with CRITICAL, or to dispatch a fresh api-expert agent in fix mode to apply a batch of approved findings.
 
 ### Fix mode (when the user approves findings)
 
-Dispatch a fresh api-expert agent whose briefing contains: the approved findings VERBATIM (severity, location, evidence, fix block), the review briefing's constraint set (behavioral contracts, call-site propagation), and this mandate: apply ONLY the approved findings, run the project's tests/lint after applying, and report per finding — applied (with diff) or skipped (with reason) — plus the pasted test output. Never fold unapproved findings into the same dispatch.
+Dispatch a fresh api-expert agent whose briefing contains: the approved findings VERBATIM (severity, location, evidence, fix block), the review briefing's constraint set (behavioral contracts, call-site propagation), and this mandate: FIRST run the test/lint suite to capture a baseline and record whether the working tree was already dirty (`git status`); then apply ONLY the approved findings, re-run tests/lint, and report per finding — applied (with diff) or skipped (with reason) — plus baseline vs post-apply output, attributing any failure that already existed at baseline to pre-existing state rather than the fixes. Never fold unapproved findings into the same dispatch.
 
 ## Execution mode
 
@@ -142,5 +145,5 @@ The dispatched agent inherits the session model — always the strongest availab
 
 - Suggest fixes that break existing callers without highlighting the call sites
 - Collapse severity — if something is CRITICAL, say so; don't soften to HIGH
-- Produce a review without at least one reference-file-cited finding
+- Relay a review with no reference-file citations anywhere — findings cite reference files when they exist; a clean review cites the files it consulted in the coverage notes
 - Add emojis
