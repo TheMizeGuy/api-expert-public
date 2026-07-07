@@ -17,7 +17,7 @@ Dispatches the api-expert agent with a deprecation briefing.
 | What's deprecating (endpoint / field / version / whole API) | Scope |
 | Replacement (if exists) | Required in migration guide |
 | Consumer audience (internal only / external partners / public) | Determines notice period |
-| Target sunset date (absolute date, RFC 1123 format) | Must be ≥ 12 months for external (≥ 24 months is GitHub-style best practice) |
+| Target sunset date (absolute date — ISO in the plan; it renders as an HTTP-date in the `Sunset` header) | Must be ≥ 12 months for external (≥ 24 months is GitHub-style best practice) |
 | Current usage telemetry available? | Can we identify heavy users to notify directly? |
 
 ## Step 2: Dispatch api-expert

@@ -1,7 +1,7 @@
 ---
 name: review-api
 description: |-
-  Comprehensive API review — endpoints, spec (OpenAPI/GraphQL/Protobuf), code, architecture, and docs. Checks for OWASP API Top 10 2023 violations, authentication/authorization gaps, missing idempotency, pagination correctness, error format (RFC 9457), rate limiting, observability hooks, contract drift, and codebase convention adherence. Triggers on "review my api", "audit my api", "check my endpoint", "api code review", "review this openapi spec", "is my api design sound", "feedback on my api". Produces severity-tagged findings (CRITICAL/HIGH/MEDIUM/LOW/NIT) with concrete fixes and cited evidence.
+  Full-surface API review — endpoints, spec (OpenAPI/GraphQL/Protobuf), code, architecture, and docs. Checks for OWASP API Top 10 2023 violations, authentication/authorization gaps, missing idempotency, pagination correctness, error format (RFC 9457), rate limiting, observability hooks, contract drift, and codebase convention adherence. Triggers on "review my api", "audit my api", "check my endpoint", "api code review", "review this openapi spec", "is my api design sound", "feedback on my api". Produces severity-tagged findings (CRITICAL/HIGH/MEDIUM/LOW/NIT) with concrete fixes and cited evidence.
 argument-hint: '[optional: scope — diff / staged / all / file path / URL]'
 allowed-tools: Agent, Read, Grep, Glob, Bash, TodoWrite, WebSearch, WebFetch, mcp__goodmem__goodmem_memories_retrieve, mcp__goodmem__goodmem_memories_get, mcp__context7__resolve-library-id, mcp__context7__query-docs, mcp__plugin_serena_serena__activate_project, mcp__plugin_serena_serena__get_symbols_overview, mcp__plugin_serena_serena__find_symbol, mcp__plugin_serena_serena__find_referencing_symbols, mcp__plugin_serena_serena__list_dir, mcp__plugin_serena_serena__search_for_pattern
 ---
@@ -128,7 +128,11 @@ marked, at least one reference-file-cited finding, runnable fixes on every CRITI
 listed for shared-utility fixes. If any check fails, re-query the agent for the gap — do not present
 a partial review as complete.
 
-Present the Summary + severity-tagged table. Offer to apply fixes one-by-one starting with CRITICAL, or to dispatch a fresh api-expert agent in "fix" mode to apply a batch of approved findings.
+Present the Summary + severity-tagged table. Offer to apply fixes one-by-one starting with CRITICAL, or to dispatch a fresh api-expert agent in fix mode to apply a batch of approved findings.
+
+### Fix mode (when the user approves findings)
+
+Dispatch a fresh api-expert agent whose briefing contains: the approved findings VERBATIM (severity, location, evidence, fix block), the review briefing's constraint set (behavioral contracts, call-site propagation), and this mandate: apply ONLY the approved findings, run the project's tests/lint after applying, and report per finding — applied (with diff) or skipped (with reason) — plus the pasted test output. Never fold unapproved findings into the same dispatch.
 
 ## Execution mode
 

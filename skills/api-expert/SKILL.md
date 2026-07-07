@@ -44,7 +44,8 @@ Before dispatching the agent:
 2. If the user referenced a specific file or endpoint, note the absolute path
 3. If the user referenced "the API" without specifying, grep for route decorators/declarations to identify the likely entry file:
    ```bash
-   grep -r -l "app.get\|app.post\|@app.route\|router.get\|router.post\|@Controller\|type Query\|service.*gRPC" --include="*.ts" --include="*.js" --include="*.py" --include="*.go" --include="*.rs" | head -5
+   grep -rlE "app\.(get|post)|@app\.route|router\.(get|post)|@(Controller|Get|Post)\b|type (Query|Mutation)|HandleFunc|\.route\(|urlpatterns|resources :" \
+     --include="*.ts" --include="*.js" --include="*.py" --include="*.go" --include="*.rs" --include="*.rb" . | head -5
    ```
 
 ## Step 3: Dispatch the api-expert agent
@@ -81,6 +82,8 @@ The agent returns a structured report. Present the Summary + Findings table to t
 ## Execution mode
 
 The dispatched agent inherits the session model — always the strongest available Claude, never a pinned or dated model. If the session model is already the strongest tier and the task is important or complicated, this skill may run the workflow inline in the main context instead of dispatching a separate agent. Never block on, or wait for, a model that isn't the session model.
+
+Fast path: for a purely factual API question with no codebase attached ("which pagination style for X?", "is RFC 9457 right for Y?"), skip the dispatch ceremony — read the 1-2 relevant reference files inline and answer directly with confidence grades. The full briefing exists for real workflows, not one-line lookups.
 
 ## Never do
 

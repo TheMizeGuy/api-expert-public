@@ -1,6 +1,6 @@
 # api-expert
 
-Version 2.0.0
+Version 0.2.0
 
 Claude Code plugin for expert API design, review, debugging, optimization, security auditing, spec generation, migration, and deprecation. Runs on the session model — always the strongest available Claude, never a pinned or dated model.
 
@@ -148,7 +148,7 @@ All other tools used are Claude Code built-ins (Read, Grep, Glob, Bash, Edit, Wr
 - Quick "what's a REST API?" questions — just use regular Claude for that
 - Implementation-only tasks where the architecture is fixed — use direct coding instead
 - Single-line error message lookups — use regular Claude
-- Python/Ruby/Java-only codebases where no JSON/REST/GraphQL API is involved
+- Codebases with no API surface at all (a CLI tool, a static site, a data pipeline with no service boundary)
 
 ## Related plugins
 

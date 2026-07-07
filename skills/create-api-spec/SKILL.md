@@ -1,7 +1,7 @@
 ---
 name: create-api-spec
 description: |-
-  Generate or update API specifications — OpenAPI 3.1 YAML, GraphQL SDL, or Protocol Buffers (.proto). Supports contract-first (write spec, generate code) and code-first (extract spec from existing code). Adds proper error schemas (RFC 9457 Problem JSON), pagination contracts (cursor-based default, Relay Connection for GraphQL), idempotency, rate limit headers, OpenAPI security schemes, examples, deprecation markers. Lints with Spectral and validates with Schemathesis/Dredd/Prism. Triggers on "create openapi spec", "generate swagger", "write a proto file", "extract openapi from code", "graphql schema", "document my api", "spec my endpoints". Produces a complete, lintable, CI-gateable spec.
+  Generate or update API specifications — OpenAPI 3.1/3.2 YAML, GraphQL SDL, or Protocol Buffers (.proto). Supports contract-first (write spec, generate code) and code-first (extract spec from existing code). Adds proper error schemas (RFC 9457 Problem JSON), pagination contracts (cursor-based default, Relay Connection for GraphQL), idempotency, rate limit headers, OpenAPI security schemes, examples, deprecation markers. Lints with Spectral and validates with Schemathesis/Dredd/Prism. Triggers on "create openapi spec", "generate swagger", "write a proto file", "extract openapi from code", "graphql schema", "document my api", "spec my endpoints". Produces a complete, lintable, CI-gateable spec.
 argument-hint: '<format — openapi | graphql | protobuf> [scope — code path OR domain description]'
 allowed-tools: Agent, Read, Grep, Glob, Bash, Edit, Write, TodoWrite, WebSearch, WebFetch, mcp__goodmem__goodmem_memories_retrieve, mcp__goodmem__goodmem_memories_get, mcp__context7__resolve-library-id, mcp__context7__query-docs, mcp__plugin_serena_serena__activate_project, mcp__plugin_serena_serena__get_symbols_overview, mcp__plugin_serena_serena__find_symbol, mcp__plugin_serena_serena__list_dir, mcp__plugin_serena_serena__search_for_pattern
 ---
@@ -14,9 +14,11 @@ Dispatches the api-expert agent to generate or update an API specification.
 
 | Format | Use when |
 |---|---|
-| **OpenAPI 3.1** | REST API, external consumers, SDK gen with Stainless/Speakeasy |
+| **OpenAPI 3.1/3.2** | REST API, external consumers, SDK gen with Stainless/Speakeasy |
 | **GraphQL SDL** | GraphQL API, client-driven multi-service composition |
 | **Protobuf (.proto)** | gRPC service, internal high-performance comms, polyglot |
+
+OpenAPI version choice: default NEW specs to 3.2 (released 2025-09-18, backward-compatible with 3.1 — adds the QUERY method, hierarchical tags, streaming media types) when the project's linter/SDK generators support it — verify support via context7, don't assume. Existing 3.1 specs stay 3.1 unless a 3.2 feature is actually needed.
 
 | Approach | Use when |
 |---|---|
@@ -51,7 +53,7 @@ Read ${CLAUDE_PLUGIN_ROOT}/references/schema-design.md FIRST, then client-access
 
 DELIVERABLES:
 
-OpenAPI 3.1:
+OpenAPI 3.1/3.2:
 1. info section with title, description, version (SemVer), license, contact
 2. servers list with prod/staging/dev URLs
 3. security schemes:
@@ -63,7 +65,10 @@ OpenAPI 3.1:
    - summary + description (clear + concise)
    - parameters (path, query, header) with types, examples, descriptions
    - requestBody with content-types and schemas
-   - responses for 200/201/400/401/403/404/409/422/429/500 AT MINIMUM
+   - responses: the operation's real success code (200/201/202/204) plus every error it can
+     actually return — 400/401/403/404/429/500 baseline; add 409/422 only where the semantics
+     apply (creation conflicts, semantic validation). Do NOT stamp the full status list on every
+     operation — that is spec bloat that hides the real contract
    - RFC 9457 Problem JSON for all error responses
 5. components/schemas with:
    - Resource models (User, Order, Invoice, etc.)

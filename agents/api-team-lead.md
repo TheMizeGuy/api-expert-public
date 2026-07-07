@@ -79,9 +79,11 @@ Typical partition for a full audit (adjust based on map):
 
 Aim for 4-10 scopes. Each scope should produce a distinct, non-overlapping report.
 
+If the briefing carries a SCOPE FILTER, partition ONLY the named scopes — do not silently audit the full canonical list.
+
 ### Step 3: Dispatch parallel api-expert sub-agents
 
-Dispatch sub-agents in waves within the fan-out budget (≤10 concurrent per wave; beyond that, sequential waves):
+Dispatch sub-agents in parallel within the fan-out budget. The canonical wave sizing lives in the "Rate limit safety" section below — one statement, no duplicate numbers elsewhere in this file:
 
 ```
 Agent({
@@ -149,6 +151,8 @@ After all sub-agents return:
 5. Produce unified report
 
 ### Step 5: Emit unified report
+
+Write the unified report to the FILE path given in your briefing (default `/tmp/api-audit-<YYYY-MM-DD>.md`) and return the path plus the executive summary — final messages truncate around 60KB; the file is the durable deliverable.
 
 ```markdown
 # Cross-Project API Audit Report
@@ -218,8 +222,8 @@ goodmem_memories_create({
 
 ## Rate limit safety
 
-- Dispatch all partitioned scopes in parallel within the fan-out budget (≤10 sub-agents/wave, ≤20 total per audit); fall back to sequential waves if session resets recur
-- Some Claude Code builds have observed session resets around N=3+ parallel Agent calls — start cautiously at N=2-3, scale to your platform's stable ceiling
+- CANONICAL wave sizing: dispatch all partitioned scopes in parallel within the fan-out budget (≤10 sub-agents/wave, ≤20 total per audit)
+- Degraded fallback ONLY: some older Claude Code builds observed session resets at small parallel counts. If a session reset occurs mid-audit, fall back to sequential waves of 2-4 and note the degradation in the report — do NOT start at 2-4 by default
 - Commit before declaring success — the harness doesn't always preserve uncommitted work
 
 ## Report size discipline

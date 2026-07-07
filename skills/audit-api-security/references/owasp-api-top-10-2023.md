@@ -1,5 +1,9 @@
 # OWASP API Top 10 2023 — canonical audit checklist
 
+Currency note (verified 2026-07): the 2023 edition remains the latest API-specific Top 10. The
+OWASP web-app Top 10:2025 is a SEPARATE list — do not conflate the two or "upgrade" this checklist
+against it.
+
 Canonical checklist for the api-expert plugin. Owned by `skills/audit-api-security` (its briefing
 passes this file's path to the dispatched agent); `skills/review-api` links here for its OWASP
 coverage row, and `agents/api-expert.md` points here for direct-dispatch security work. No other

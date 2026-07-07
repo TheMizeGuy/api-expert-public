@@ -3,6 +3,42 @@
 All notable changes to this plugin are documented here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.2.0] - 2026-07-07
+
+### Fixed
+
+- `api-team-lead` wave-sizing contradiction: the dispatch step and "Rate limit safety" carried
+  different concurrency numbers. One canonical statement now lives in Rate limit safety; waves of
+  2-4 are a session-reset fallback only, never the default.
+- README's version line still read 2.0.0 after the 0.1.2 realignment — now tracks the plugin
+  version.
+- Three skill descriptions used "comprehensive" — a word the agent's own MUST-NOT list bans as AI
+  slop. Reworded.
+
+### Added
+
+- Canonical goodmem retrieve call shape in `agents/api-expert.md` (object-array `space_keys`,
+  `fetch_memory: false`) — prevents the most common silent-failure misuse for users who configure
+  goodmem.
+- OpenAPI 3.2 currency (released 2025-09-18, backward-compatible): the spec-generation workflow
+  and `create-api-spec` default NEW specs to 3.2 when toolchain support is verified via context7,
+  else 3.1; existing 3.1 specs stay 3.1.
+- OWASP currency note in the canonical checklist: 2023 remains the latest API-specific Top 10; the
+  web-app Top 10:2025 is a separate list — do not conflate.
+- Fix-mode briefing contract in `review-api` (approved findings only, tests run after, per-finding
+  applied/skipped report) — the skill offered fix mode but never defined it.
+- `api-team-lead`: honors the briefing's SCOPE FILTER; writes the unified report to the briefing's
+  FILE path (final messages truncate ~60KB — the file is the durable deliverable).
+- Router fast path for factual one-liner questions (inline reference read, no dispatch ceremony)
+  and a broader endpoint-detection grep (NestJS decorators, Go HandleFunc, Rails, Django, Axum).
+
+### Changed
+
+- `create-api-spec` response guidance: each operation documents its real success code plus errors
+  it can actually return, instead of stamping ten statuses on every operation (spec bloat).
+- `deprecate-api` date-format clarification: ISO dates in the plan; the `Sunset` header renders as
+  an HTTP-date.
+
 ## [0.1.2] - 2026-07-05
 
 ### Changed
